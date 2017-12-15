@@ -1,10 +1,13 @@
 clear all
 clc
 close all
+%% INPUT FILE
+[FileName,PathName] = uigetfile({'*.jpg;*.tif;*.png;*.gif','All Image Files';'*.*','All Files' },'Select the image file');
+file=strcat(PathName,FileName);
 %% parameters
 pkProminence=0.012; %prominencia de intesidad para detección de bandas
 allowedError=0.02; %error permitido en la construcción de árboles
-file='images/gel25.jpg';
+% file='images/gel25.jpg';
 %% read
 I = imread(file);
 if(size(I,3)~=1)
