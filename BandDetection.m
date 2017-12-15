@@ -14,7 +14,8 @@ if(size(I,3)~=1)
     I=I(:,:,1:3);
 end
 % crop
-[I2, rect] = imcrop(I); 
+[I2, rect] = imcrop(I);
+% title('Crop to select area where bands are located')
 close all;
 
 if(size(I2,3)~=1)
@@ -37,11 +38,11 @@ switch choice
 end
  
 %Select pozos
-fig4 = figure(4);
+fig4 = figure('Name','Lane selection','NumberTitle','off');
 imshow(I4);
 pause(0.00001);
 frame_h = get(handle(fig4),'JavaFrame');
-set(frame_h,'Maximized',1); 
+set(frame_h,'Maximized',1);
 
 title ('Draw rectangles over each lane','fontsize',18);
 
@@ -81,7 +82,7 @@ maxYpk=0;
 %pp = counter crop well + intensity plot
 %p odd pp vales
 %q even pp values
-fig8=figure(8)
+fig8=figure('Name','Detected bands = Peak intensities','NumberTitle','off')
 for pp = 1:2*n
     p = floor(pp/2)+1;
     q = pp/2;
@@ -219,39 +220,76 @@ end
 
 names = cellstr(names); %cells with char data
 
-
+%% DENDOGRAMS
+[Selection,ok] = listdlg('Name', 'Dendograms','PromptString','Select dendogram method(s):','ListString',{'Nearest distance','Furthest distance','UPGMA','WPGMA','UPGMC','WPGMC','Neighbor joining'}) ;
+   
 % treeN = seqlinkage(dist_mat);
 % phytreeviewer(treeN)
 % phytreewrite('E:\USUARIOS/USER/Documents/Alejo/MBC/Algoritmos/nwktrees/newtree.nwk',treeN)
 
+
 % %Nearest distance (single linkage method)
-% phylotree_NS = seqlinkage(dist_mat,'single',names);
-% view(phylotree_NS) 
-% 
+    if ismember(1,Selection)==1
+        phylotree_NS = seqlinkage(dist_mat,'single',names);
+        plot(phylotree_NS,'LeafLabels', true, 'TerminalLabels', false)
+        title('Nearest Distance Dendogram')
+        nwkName=strcat(FileName,'_ND');
+        phytreewrite(nwkName,phylotree_NS);
+    end
+
 % %Furthest distance (complete linkage method)
-% phylotree_FD = seqlinkage(dist_mat,'complete',names);
-% view(phylotree_FD) 
+if ismember(2,Selection)==1
+    phylotree_FD = seqlinkage(dist_mat,'complete',names);
+    plot(phylotree_FD,'LeafLabels', true, 'TerminalLabels', false)
+    title('Furthest Distance Dendogram')
+    nwkName=strcat(FileName,'_FD');
+    phytreewrite(nwkName,phylotree_FD);
+end
 
 % % Unweighted Pair Group Method Average (UPGMA, group average).
-% phylotree_UPGMA = seqlinkage(dist_mat,'average',names);
-% view(phylotree_UPGMA) 
+if ismember(3,Selection)==1
+    phylotree_UPGMA = seqlinkage(dist_mat,'average',names);
+    plot(phylotree_UPGMA,'LeafLabels', true, 'TerminalLabels', false)
+    title('UPGMA Dendogram')
+    nwkName=strcat(FileName,'_UPGMA');
+    phytreewrite(nwkName,phylotree_UPGMA);
+end
 
 % %Weighted Pair Group Method Average (WPGMA)
-% phylotree_WPGMA = seqlinkage(dist_mat,'weighted',names);
-% view(phylotree_WPGMA) 
-% 
+if ismember(4,Selection)==1
+    phylotree_WPGMA = seqlinkage(dist_mat,'weighted',names);
+    plot(phylotree_WPGMA,'LeafLabels', true, 'TerminalLabels', false)
+    title('WPGMA Dendogram')
+    nwkName=strcat(FileName,'_WPGMA');
+    phytreewrite(nwkName,phylotree_WPGMA);
+end
+
 % %Unweighted Pair Group Method Centroid (UPGMC)
-% phylotree_UPGMC = seqlinkage(dist_mat,'centroid',names);
-% view(phylotree_UPGMC) 
-% 
+if ismember(5,Selection)==1
+    phylotree_UPGMC = seqlinkage(dist_mat,'centroid',names);
+    plot(phylotree_UPGMC,'LeafLabels', true, 'TerminalLabels', false)
+    title('UPGMC Dendogram')
+    nwkName=strcat(FileName,'_UPGMC');
+    phytreewrite(nwkName,phylotree_UPGMC);
+end
+
 % %Weighted Pair Group Method Centroid (WPGMC)
-% phylotree_WPGMC = seqlinkage(dist_mat,'median',names);
-% view(phylotree_WPGMC) 
+if ismember(6,Selection)==1
+    phylotree_WPGMC = seqlinkage(dist_mat,'median',names);
+    plot(phylotree_WPGMC,'LeafLabels', true, 'TerminalLabels', false)
+    title('WPGMC Dendogram')
+    nwkName=strcat(FileName,'_WPGMC');
+    phytreewrite(nwkName,phylotree_WPGMC);
+end
 
 %Neigbhor Joining
-phylotree_NJ = seqneighjoin(dist_mat,'equivar',names);
-view(phylotree_NJ)
-phytreewrite('E:\USUARIOS/USER/Documents/Alejo/MBC/Algoritmos/nwktrees/newtree.nwk',phylotree_NJ)
+if ismember(7,Selection)==1
+    phylotree_NJ = seqneighjoin(dist_mat,'equivar',names);
+    plot(phylotree_NJ,'LeafLabels', true, 'TerminalLabels', false)
+    title('Neighbor Joining Dendogram')
+    nwkName=strcat(FileName,'_NJ');
+    phytreewrite(nwkName,phylotree_NJ);
+end
 
 
 
